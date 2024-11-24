@@ -607,10 +607,16 @@ namespace ${this.packageName}.API.Schema
             fs.mkdirSync(queriesPath, { recursive: true });
         }
 
-        for (const tableName of Object.keys(tables)) {
+        for (const [tableName, columns] of Object.entries(tables)) {
             const className = tableName;
             const filePath = path.join(queriesPath, `${className}Query.cs`);
             if (fs.existsSync(filePath)) continue;
+
+            const primaryKeyColumn = columns.find(column => column.IS_PRIMARY_KEY)?.COLUMN_NAME;
+            if (!primaryKeyColumn) {
+                console.warn(`No primary key found for table ${tableName}. Skipping GraphQL Query file generation.`);
+                continue;
+            }
 
             const queryContent = `using GraphQL;
 using GraphQL.Types;
@@ -734,7 +740,7 @@ namespace ${this.packageName}.API.Schema.Queries
                     var columns = context.SubFields?.Keys.ToList();
                     var query = new SqlKata.Query("${className}")
                         .When(columns != null && columns.Any(), q => q.Select(columns))
-                        .Where("Id", context.GetArgument<int>("id"));
+                        .Where("${primaryKeyColumn}", context.GetArgument<int>("id"));
                     return await _${className.toLowerCase()}Service.ExecQueryWithoutGet(query).FirstOrDefaultAsync<${className}>();
                 });
         }
