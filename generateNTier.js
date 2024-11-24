@@ -93,6 +93,9 @@ namespace ${this.packageName}.Entities.Concrete
                     case 'datetime':
                         csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                         break;
+                    case 'date':
+                        csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
+                        break;
                     default:
                         csharpType = 'object';
                 }
@@ -477,6 +480,9 @@ namespace ${this.packageName}.Core.Models.${className}
                             case 'datetime':
                                 csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                                 break;
+                            case 'date':
+                                csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
+                                break;
                             default:
                                 csharpType = 'object';
                         }
@@ -522,6 +528,9 @@ namespace ${this.packageName}.Core.Models.${className}
                             csharpType = IS_NULLABLE === 'YES' ? 'bool?' : 'bool';
                             break;
                         case 'datetime':
+                            csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
+                            break;
+                        case 'date':
                             csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                             break;
                         default:
