@@ -213,7 +213,7 @@ namespace ${this.packageName}.Business.Abstract
 
         IEnumerable<dynamic> Add(Query query, ${className} entity);
 
-        IEnumerable<dynamic> Update(Query query, ${className} entity);
+        IEnumerable<dynamic> Update(Query query, object entity);
 
         IEnumerable<dynamic> Delete(Query query);
     }
@@ -282,7 +282,7 @@ namespace ${this.packageName}.Business.Concrete
             return _tDal.Add(query, entity);
         }
 
-        public IEnumerable<dynamic> Update(Query query, ${className} entity)
+        public IEnumerable<dynamic> Update(Query query, object entity)
         {
             return _tDal.Update(query, entity);
         }
@@ -421,7 +421,7 @@ namespace ${this.packageName}.API.Controllers
         public IActionResult Update([FromBody] ${className}UpdateModel model)
         {
             var updateQuery = new SqlKata.Query("${className}").Where("${primaryKeyColumn}", model.${primaryKeyColumn});
-            var updateEntity = new ${className}
+            var updateEntity = new
             {
                 ${fillPropertiesFromModel}
             };
