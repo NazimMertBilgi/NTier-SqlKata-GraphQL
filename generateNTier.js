@@ -41,11 +41,12 @@ class NMBDatabaseSchemaGenerator {
             this.generateManagerFiles(tables);
             this.generateControllerFiles(tables);
             this.generateModelFiles(tables);
-            this.generateGraphQLSchemaFiles(tables);
+            this.generateGraphQLSchemaFiles();
             this.generateGraphQLQueryFiles(tables);
             this.generateGraphQLTypeFiles(tables);
+            this.generateGraphQLCombinedQueryFile(tables);
             //
-            this.generateGraphQLSchemaDependencyInjection(tables);
+            this.generateGraphQLSchemaDependencyInjection(tables); // Modify this line
             this.generateDependencyInjectionRegistrations(tables);
             //
             sql.close();
@@ -540,34 +541,28 @@ namespace ${this.packageName}.Core.Models.${className}
         }
     }
 
-    generateGraphQLSchemaFiles(tables) {
+    generateGraphQLSchemaFiles() {
         const schemaPath = path.join(__dirname, `${this.packageName}.API`, 'Schema');
         if (!fs.existsSync(schemaPath)) {
             fs.mkdirSync(schemaPath, { recursive: true });
         }
 
-        for (const tableName of Object.keys(tables)) {
-            const className = tableName;
-            const filePath = path.join(schemaPath, `${className}Schema.cs`);
-            if (fs.existsSync(filePath)) continue;
-
-            const schemaContent = `using GraphQL.Types;
-using ${this.packageName}.API.Schema.Queries;
+        const filePath = path.join(schemaPath, 'CombinedSchema.cs');
+        const combinedSchemaContent = `using ${this.packageName}.API.Schema.Queries;
+using SqlKata;
 
 namespace ${this.packageName}.API.Schema
 {
-    public class ${className}Schema : GraphQL.Types.Schema
+    public class CombinedSchema : GraphQL.Types.Schema
     {
-        public ${className}Schema(IServiceProvider serviceProvider) : base(serviceProvider)
+        public CombinedSchema(IServiceProvider provider) : base(provider)
         {
-            Description = "${className} Schema";
-            Query = serviceProvider.GetRequiredService<${className}Query>();
+            Query = provider.GetRequiredService<CombinedQuery>();
         }
     }
 }
 `;
-            fs.writeFileSync(filePath, schemaContent, 'utf8');
-        }
+        fs.writeFileSync(filePath, combinedSchemaContent, 'utf8');
     }
 
     generateGraphQLQueryFiles(tables) {
@@ -695,7 +690,7 @@ namespace ${this.packageName}.API.Schema.Queries
                 return result;
             });
 
-            Field<${className}Type>("${className.toLowerCase()}").Arguments(
+            Field<${className}Type>("${className.toLowerCase()}_get").Arguments(
                 new QueryArguments(
                     new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "id" }))
                 .ResolveAsync(async context =>
@@ -712,6 +707,29 @@ namespace ${this.packageName}.API.Schema.Queries
 `;
             fs.writeFileSync(filePath, queryContent, 'utf8');
         }
+    }
+
+    generateGraphQLCombinedQueryFile(tables) {
+        const queriesPath = path.join(__dirname, `${this.packageName}.API`, 'Schema', 'Queries');
+        const filePath = path.join(queriesPath, 'CombinedQuery.cs');
+        const fields = Object.keys(tables)
+            .map(tableName => `Field<${tableName}Query>("${tableName.toLowerCase()}Query", resolve: context => new { });`)
+            .join('\n            ');
+
+        const combinedQueryContent = `using GraphQL.Types;
+
+namespace ${this.packageName}.API.Schema.Queries
+{
+    public class CombinedQuery : ObjectGraphType
+    {
+        public CombinedQuery()
+        {
+            ${fields}
+        }
+    }
+}
+`;
+        fs.writeFileSync(filePath, combinedQueryContent, 'utf8');
     }
 
     generateGraphQLTypeFiles(tables) {
@@ -751,18 +769,27 @@ namespace ${this.packageName}.API.Schema.Types
         const injectionLines = [];
 
         for (const tableName of Object.keys(tables)) {
-            const schemaRegistration = `builder.Services.AddScoped<ISchema, ${tableName}Schema>(services => new ${tableName}Schema(new SelfActivatingServiceProvider(services)));`;
-
-            if (!programFileContent.includes(schemaRegistration)) {
+            const queryRegistration = `builder.Services.AddScoped<${tableName}Query>();`;
+            if (!programFileContent.includes(queryRegistration)) {
                 injectionLines.push('//');
-                injectionLines.push(schemaRegistration);
+                injectionLines.push(queryRegistration);
             }
-           
+        }
+
+        const combinedQueryRegistration = `builder.Services.AddScoped<CombinedQuery>();`;
+        const schemaRegistration = `builder.Services.AddScoped<ISchema, CombinedSchema>(services => new CombinedSchema(new SelfActivatingServiceProvider(services)));`;
+
+        if (!programFileContent.includes(combinedQueryRegistration)) {
+            injectionLines.push('//');
+            injectionLines.push(combinedQueryRegistration);
+        }
+        if (!programFileContent.includes(schemaRegistration)) {
+            injectionLines.push(schemaRegistration);
         }
 
         const injectionCode = injectionLines.join('\n');
         const modifiedContent = programFileContent.replace(
-             'var builder = WebApplication.CreateBuilder(args);',
+            'var builder = WebApplication.CreateBuilder(args);',
             `var builder = WebApplication.CreateBuilder(args);${injectionCode.length > 0 ? '\n' : ''}${injectionCode}`
         );
 
