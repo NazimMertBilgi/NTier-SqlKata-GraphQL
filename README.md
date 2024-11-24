@@ -1,6 +1,6 @@
-# NTier-SqlKata
+# NTier-SqlKata-GraphQL
 
-This project aims to generate a multi-tier architecture using SqlKata for dynamic SQL query generation and management. The project automatically generates C# classes, Data Access Layer (DAL), Business Layer, and API controllers from database tables.
+This project aims to generate a multi-tier architecture using SqlKata for dynamic SQL query generation and management. The project automatically generates C# classes, Data Access Layer (DAL), Business Layer, API controllers, and GraphQL schema, queries, and types from database tables.
 
 ## Requirements
 
@@ -12,8 +12,8 @@ This project aims to generate a multi-tier architecture using SqlKata for dynami
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/NazimMertBilgi/NTier-SqlKata-Example.git
-    cd NTier-SqlKata-Example
+    git clone https://github.com/NazimMertBilgi/NTier-SqlKata-GraphQL
+    cd NTier-SqlKata-GraphQL
     ```
 
 2. Install the required Node.js dependencies:
@@ -57,6 +57,7 @@ now you are ready 😊 look at your project files and see the changes for yourse
 - `NTier-SqlKata.sln`: Solution file
 - `NTier.API/`: API layer
   - `Controllers/`: API controllers
+  - `Schema/`: GraphQL schema, queries, and types
   - `Program.cs`: Main entry point for the API
 - `NTier.Business/`: Business layer
   - `Abstract/`: Abstract business services
@@ -64,6 +65,7 @@ now you are ready 😊 look at your project files and see the changes for yourse
 - `NTier.Core/`: Core layer
   - `Classes/`: Core classes
   - `Entities/`: Entity interfaces and classes
+  - `Models/`: Data models
 - `NTier.DataAccess/`: Data access layer
   - `Abstract/`: Abstract data access services
   - `Concrete/`: Concrete data access services
@@ -71,7 +73,7 @@ now you are ready 😊 look at your project files and see the changes for yourse
 
 ## generateNTier.js
 
-This file is responsible for generating C# classes, Data Access Layer (DAL), Business Layer, and API controllers from database tables.
+This file is responsible for generating C# classes, Data Access Layer (DAL), Business Layer, API controllers, and GraphQL schema, queries, and types from database tables.
 
 ### Functions
 
@@ -84,6 +86,10 @@ This file is responsible for generating C# classes, Data Access Layer (DAL), Bus
 - `generateDependencyInjectionRegistrations(tables)`: Generates dependency injection registrations.
 - `generateControllerFiles(tables)`: Generates API controller files.
 - `generateModelFiles(tables)`: Generates model files.
+- `generateGraphQLSchemaFiles(tables)`: Generates GraphQL schema files.
+- `generateGraphQLQueryFiles(tables)`: Generates GraphQL query files.
+- `generateGraphQLTypeFiles(tables)`: Generates GraphQL type files.
+- `generateGraphQLSchemaDependencyInjection(tables)`: Generates GraphQL schema dependency injection registrations.
 
 ### Others
 
