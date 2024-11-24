@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NTier_SqlKata_ghQL.Core\NTier_SqlKata_ghQL.Core.csproj" />
+    <ProjectReference Include="..\NTier_SqlKata_ghQL.DataAccess\NTier_SqlKata_ghQL.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>

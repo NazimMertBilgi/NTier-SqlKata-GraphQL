@@ -1,0 +1,19 @@
+{
+    "packageName": "NTier_SqlKata_ghQL",
+    "slnFileName": "NTier_SqlKata_ghQL.sln",
+    "folders": [
+        "Core",
+        "DataAccess",
+        "Entities",
+        "Business",
+        "API"
+    ],
+    "dbConnection": {
+        "server": ".",
+        "database": "GraphQL-SqlKata-DB",
+        "driver": "msnodesqlv8",
+        "options": {
+            "trustedConnection": true
+        }
+    }
+}
