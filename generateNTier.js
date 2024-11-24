@@ -82,6 +82,12 @@ namespace ${this.packageName}.Entities.Concrete
                     case 'int':
                         csharpType = IS_NULLABLE === 'YES' ? 'int?' : 'int';
                         break;
+                    case 'tinyint':
+                        csharpType = IS_NULLABLE === 'YES' ? 'byte?' : 'byte';
+                        break;
+                    case 'decimal':
+                        csharpType = IS_NULLABLE === 'YES' ? 'decimal?' : 'decimal';
+                        break;
                     case 'varchar':
                     case 'nvarchar':
                     case 'char':
@@ -93,11 +99,14 @@ namespace ${this.packageName}.Entities.Concrete
                     case 'datetime':
                         csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                         break;
+                    case 'smalldatetime':
+                        csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
+                        break;
                     case 'date':
                         csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                         break;
                     default:
-                        csharpType = 'object';
+                        csharpType = IS_NULLABLE === 'YES' ? 'object?' : 'object';
                 }
                 let stringNullableFeature = csharpType == "string" ? "= null!;" : "";
                 let primaryKeyAttribute = IS_PRIMARY_KEY ? '[PrimaryKey]\n        ' : '';
@@ -469,6 +478,12 @@ namespace ${this.packageName}.Core.Models.${className}
                             case 'int':
                                 csharpType = IS_NULLABLE === 'YES' ? 'int?' : 'int';
                                 break;
+                            case 'tinyint':
+                                csharpType = IS_NULLABLE === 'YES' ? 'byte?' : 'byte';
+                                break;
+                            case 'decimal':
+                                csharpType = IS_NULLABLE === 'YES' ? 'decimal?' : 'decimal';
+                                break;
                             case 'varchar':
                             case 'nvarchar':
                             case 'char':
@@ -480,11 +495,14 @@ namespace ${this.packageName}.Core.Models.${className}
                             case 'datetime':
                                 csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                                 break;
+                            case 'smalldatetime':
+                                csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
+                                break;
                             case 'date':
                                 csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                                 break;
                             default:
-                                csharpType = 'object';
+                                csharpType = IS_NULLABLE === 'YES' ? 'object?' : 'object';
                         }
                         let stringNullableFeature = csharpType === "string" && IS_NULLABLE === 'NO' ? "= null!;" : "";
                         let requiredAttribute = IS_NULLABLE === 'NO' ? `[Required(ErrorMessage = "Lütfen ${COLUMN_NAME} alanını doldurunuz.")]\n        ` : '';
@@ -519,6 +537,12 @@ namespace ${this.packageName}.Core.Models.${className}
                         case 'int':
                             csharpType = IS_NULLABLE === 'YES' ? 'int?' : 'int';
                             break;
+                        case 'tinyint':
+                            csharpType = IS_NULLABLE === 'YES' ? 'byte?' : 'byte';
+                            break;
+                        case 'decimal':
+                            csharpType = IS_NULLABLE === 'YES' ? 'decimal?' : 'decimal';
+                            break;
                         case 'varchar':
                         case 'nvarchar':
                         case 'char':
@@ -530,11 +554,14 @@ namespace ${this.packageName}.Core.Models.${className}
                         case 'datetime':
                             csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                             break;
+                        case 'smalldatetime':
+                            csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
+                            break;
                         case 'date':
                             csharpType = IS_NULLABLE === 'YES' ? 'DateTime?' : 'DateTime';
                             break;
                         default:
-                            csharpType = 'object';
+                            csharpType = IS_NULLABLE === 'YES' ? 'object?' : 'object';
                     }
                     let stringNullableFeature = csharpType === "string" && IS_NULLABLE === 'NO' ? "= null!;" : "";
                     let requiredAttribute = IS_NULLABLE === 'NO' ? `[Required(ErrorMessage = "Lütfen ${COLUMN_NAME} alanını doldurunuz.")]\n        ` : '';
